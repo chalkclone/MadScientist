@@ -1,0 +1,27 @@
+const fetch = require('node-fetch');
+
+module.exports = async (req, res) => {
+  const wallet = req.query.wallet || 'osmo1psaaa8z5twqgs4ahgqdxwl86eydmlwhesmv4s9';
+  const lcdUrl = 'https://osmosis-api.polkachu.com';
+
+  try {
+    const balancesResp = await fetch(`${lcdUrl}/cosmos/bank/v1beta1/balances/${wallet}`);
+    const txsResp = await fetch(`${lcdUrl}/cosmos/tx/v1beta1/txs?events=transfer.recipient='${wallet}'&order_by=ORDER_BY_DESC&limit=50`);
+
+    // Здесь можно добавить парсинг и вывод ответа
+    const balances = await balancesResp.json();
+    const transactions = await txsResp.json();
+
+    res.status(200).json({ balances, transactions });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch data', details: error.message });
+  }
+};
+const balances = await balancesResp.json();
+const transactions = await txsResp.json();
+
+res.status(200).json({ balances, transactions });
+} catch (err) {
+res.status(500).json({ error: err.message });
+}
+};
